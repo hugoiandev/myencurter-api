@@ -5,10 +5,13 @@ import com.myencurter.model.User;
 import com.myencurter.repository.UrlRepository;
 import com.myencurter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.List;
 
 @Service
 public class UrlService {
@@ -20,7 +23,7 @@ public class UrlService {
 
     private static final String BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-    public String save(String url, String username) {
+    public String saveUrl(String url, String username) {
 
         User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User Not Found."));
 
@@ -36,11 +39,18 @@ public class UrlService {
         return createdUrl.getId();
     }
 
-    public String redirectUrl(String shortId) {
+    public String getUrl(String shortId) {
 
         Url url = urlRepository.findById(shortId).orElseThrow(() -> new RuntimeException("Url Id Not Found."));
 
         return url.getUrl();
+    }
+
+    public List<Url> getUrlsByUser(String username) {
+
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User Not Found."));
+
+        return urlRepository.findAllByUserId(user.getId());
     }
 
     private String generateHash() {

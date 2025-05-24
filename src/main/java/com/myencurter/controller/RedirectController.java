@@ -21,7 +21,7 @@ public class RedirectController {
     @GetMapping("/{id}")
     public void redirect(@PathVariable String id, HttpServletResponse response) throws IOException {
 
-        String url = urlService.redirectUrl(id);
+        String url = urlService.getUrl(id);
 
         response.sendRedirect(url);
     }
