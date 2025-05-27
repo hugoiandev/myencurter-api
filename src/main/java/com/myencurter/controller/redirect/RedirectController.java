@@ -1,6 +1,6 @@
-package com.myencurter.controller;
+package com.myencurter.controller.redirect;
 
-import com.myencurter.repository.UrlRepository;
+import com.myencurter.model.Url;
 import com.myencurter.service.UrlService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,8 @@ public class RedirectController {
     @GetMapping("/{id}")
     public void redirect(@PathVariable String id, HttpServletResponse response) throws IOException {
 
-        String url = urlService.redirectUrl(id);
+        Url url = urlService.getUrl(id);
 
-        response.sendRedirect(url);
+        response.sendRedirect(url.getUrl());
     }
 }

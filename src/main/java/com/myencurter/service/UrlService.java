@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.List;
 
 @Service
 public class UrlService {
@@ -20,7 +21,7 @@ public class UrlService {
 
     private static final String BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-    public String save(String url, String username) {
+    public Url saveUrl(String url, String username) {
 
         User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User Not Found."));
 
@@ -31,16 +32,19 @@ public class UrlService {
         urlEntity.setUrl(url);
         urlEntity.setUser(user);
 
-        Url createdUrl = urlRepository.save(urlEntity);
-
-        return createdUrl.getId();
+        return urlRepository.save(urlEntity);
     }
 
-    public String redirectUrl(String shortId) {
+    public Url getUrl(String shortId) {
 
-        Url url = urlRepository.findById(shortId).orElseThrow(() -> new RuntimeException("Url Id Not Found."));
+        return urlRepository.findById(shortId).orElseThrow(() -> new RuntimeException("Url não encontrada ou expirada."));
+    }
 
-        return url.getUrl();
+    public List<Url> getAllUrlsByUser(String username) {
+
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User Not Found."));
+
+        return urlRepository.findAllByUserId(user.getId());
     }
 
     private String generateHash() {
