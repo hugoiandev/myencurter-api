@@ -1,3 +1,3 @@
-package com.myencurter.dto;
+package com.myencurter.dto.url;
 
 public record UrlRequestDTO(String url) {}

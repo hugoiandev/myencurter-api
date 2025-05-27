@@ -5,8 +5,6 @@ import com.myencurter.model.User;
 import com.myencurter.repository.UrlRepository;
 import com.myencurter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -23,7 +21,7 @@ public class UrlService {
 
     private static final String BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-    public String saveUrl(String url, String username) {
+    public Url saveUrl(String url, String username) {
 
         User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User Not Found."));
 
@@ -34,19 +32,15 @@ public class UrlService {
         urlEntity.setUrl(url);
         urlEntity.setUser(user);
 
-        Url createdUrl = urlRepository.save(urlEntity);
-
-        return createdUrl.getId();
+        return urlRepository.save(urlEntity);
     }
 
-    public String getUrl(String shortId) {
+    public Url getUrl(String shortId) {
 
-        Url url = urlRepository.findById(shortId).orElseThrow(() -> new RuntimeException("Url Id Not Found."));
-
-        return url.getUrl();
+        return urlRepository.findById(shortId).orElseThrow(() -> new RuntimeException("Url não encontrada ou expirada."));
     }
 
-    public List<Url> getUrlsByUser(String username) {
+    public List<Url> getAllUrlsByUser(String username) {
 
         User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User Not Found."));
 

@@ -1,19 +1,17 @@
-package com.myencurter.controller;
+package com.myencurter.controller.auth;
 
-import com.myencurter.dto.LoginRequestDTO;
-import com.myencurter.dto.RegisterRequestDTO;
-import com.myencurter.dto.ResponseDTO;
+import com.myencurter.dto.auth.LoginRequestDTO;
+import com.myencurter.dto.auth.RegisterRequestDTO;
+import com.myencurter.dto.auth.AuthResponseDTO;
 import com.myencurter.model.User;
 import com.myencurter.repository.UserRepository;
 import com.myencurter.security.TokenService;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -30,15 +28,19 @@ public class AuthController {
         User user = repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
         if (passwordEncoder.matches(body.password(), user.getPassword())) {
             String token = tokenService.generateToken(user);
-            return ResponseEntity.ok(new ResponseDTO(user.getName(), token));
+            return ResponseEntity.ok(new AuthResponseDTO(user.getName(), token));
         }
 
         return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody RegisterRequestDTO body) {
+    public ResponseEntity register(@RequestBody @Valid RegisterRequestDTO body, BindingResult bindingResult) {
         Optional<User> user = repository.findByEmail(body.email());
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors().stream().map(err -> err.getDefaultMessage()));
+        }
 
         if (user.isEmpty()) {
             User newUser = new User();
@@ -49,7 +51,7 @@ public class AuthController {
 
             String token = tokenService.generateToken(newUser);
 
-            return ResponseEntity.ok(new ResponseDTO(newUser.getName(), token));
+            return ResponseEntity.ok(new AuthResponseDTO(newUser.getName(), token));
         }
 
         return ResponseEntity.badRequest().build();

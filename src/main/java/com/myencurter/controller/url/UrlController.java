@@ -1,7 +1,7 @@
-package com.myencurter.controller;
+package com.myencurter.controller.url;
 
-import com.myencurter.dto.UrlRequestDTO;
-import com.myencurter.dto.UrlResponseDTO;
+import com.myencurter.dto.url.UrlRequestDTO;
+import com.myencurter.dto.url.UrlResponseDTO;
 import com.myencurter.model.Url;
 import com.myencurter.service.UrlService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -30,23 +29,26 @@ public class UrlController {
 
         String username = userDetails.getUsername();
 
-        String hash = urlService.saveUrl(urlRequestDTO.url(), username);
+        Url url = urlService.saveUrl(urlRequestDTO.url(), username);
 
         String domain = request.getServerName();
         int port = request.getServerPort();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new UrlResponseDTO(domain + ":" + port + "/" + hash)
+                new UrlResponseDTO(url.getId(),domain + ":" + port + "/" + url.getId(), url.getUrl())
         );
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<UrlResponseDTO>> getAllUrlsByUserId(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<UrlResponseDTO>> getAllUrlsByUserId(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
 
         String username = userDetails.getUsername();
 
-        List<Url> allLinks = urlService.getUrlsByUser(username);
+        List<Url> allLinks = urlService.getAllUrlsByUser(username);
 
-        return ResponseEntity.ok(allLinks.stream().map((link) -> new UrlResponseDTO(link.getUrl())).toList());
+        String domain = request.getServerName();
+        int port = request.getServerPort();
+
+        return ResponseEntity.ok(allLinks.stream().map((link) -> new UrlResponseDTO(link.getId(), link.getUrl(), domain + ":" + port + "/" + link.getId())).toList());
     }
 }
