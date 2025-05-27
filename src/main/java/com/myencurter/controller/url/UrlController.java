@@ -5,6 +5,7 @@ import com.myencurter.dto.url.UrlResponseDTO;
 import com.myencurter.model.Url;
 import com.myencurter.service.UrlService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class UrlController {
     @PostMapping("/createShortUrl")
     public ResponseEntity<UrlResponseDTO> createShortUrl(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody UrlRequestDTO urlRequestDTO,
+            @RequestBody @Valid UrlRequestDTO urlRequestDTO,
             HttpServletRequest request) {
 
         String username = userDetails.getUsername();

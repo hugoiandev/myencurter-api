@@ -24,7 +24,8 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequestDTO body) {
+    public ResponseEntity login(@RequestBody @Valid LoginRequestDTO body) {
+
         User user = repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
         if (passwordEncoder.matches(body.password(), user.getPassword())) {
             String token = tokenService.generateToken(user);
@@ -35,12 +36,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterRequestDTO body, BindingResult bindingResult) {
-        Optional<User> user = repository.findByEmail(body.email());
+    public ResponseEntity register(@RequestBody @Valid RegisterRequestDTO body) {
 
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors().stream().map(err -> err.getDefaultMessage()));
-        }
+        Optional<User> user = repository.findByEmail(body.email());
 
         if (user.isEmpty()) {
             User newUser = new User();

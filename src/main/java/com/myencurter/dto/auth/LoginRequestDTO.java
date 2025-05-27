@@ -1,4 +1,13 @@
 package com.myencurter.dto.auth;
 
-public record LoginRequestDTO(String email, String password) {
-}
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginRequestDTO(
+
+        @Email(message = "Informe um email válido.")
+        String email,
+
+        @NotBlank(message = "A senha é obrigatória.")
+        String password
+) {}
