@@ -145,11 +145,5 @@ class UrlServiceTest {
             assertEquals("https://www.linkedin.com", result.get(1).getUrl());
 
         }
-
-        @Test
-        @DisplayName("Deve lançar uma lista vazia quando não encontrar urls.")
-        void shouldThrowExceptionWhenUrlsEmpty() {
-
-        }
     }
 }
