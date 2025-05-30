@@ -4,7 +4,7 @@
 ### Essa API foi desenvolvida utilizando arquitetura em camadas, sendo elas, controller, service, repository, cada uma com a sua responsabilidade.
 
 ## Tecnologias e ferramentas utilizadas nessa API:
-- ### Java
+- ### Java 17
 - ### Spring Web
 - ### Spring Data JPA (Hibernate)
 - ### Spring Security
