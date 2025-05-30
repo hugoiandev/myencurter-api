@@ -5,6 +5,7 @@
 
 ## Tecnologias e ferramentas utilizadas nessa API:
 - ### Java
+- ### Spring Web
 - ### Spring Data JPA (Hibernate)
 - ### Spring Security
 - ### JWT
