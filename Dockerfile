@@ -3,6 +3,8 @@ FROM openjdk:17-jdk-slim
 
 # Cria um diretório dentro do container
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
 # Copia o arquivo JAR gerado para dentro do container
 COPY target/myencurter-*.jar app.jar
