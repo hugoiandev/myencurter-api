@@ -36,7 +36,7 @@ public class UrlController {
         int port = request.getServerPort();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new UrlResponseDTO(url.getId(),domain + ":" + port + "/" + url.getId(), url.getUrl())
+                new UrlResponseDTO(url.getId(), url.getUrl(), domain + ":" + port + "/" + url.getId())
         );
     }
 
