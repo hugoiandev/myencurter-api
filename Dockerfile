@@ -10,7 +10,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Etapa 2: imagem final com apenas o JAR e o JDK
-FROM eclipse-temurin:17-jdk-slim
+FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
